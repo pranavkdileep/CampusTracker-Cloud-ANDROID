@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:weightSum="6">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="6">
+
+    <TextView
+        android:id="@+id/tvRollNo"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:padding="8dp" />
+
+    <View
+        android:layout_height="match_parent"
+        android:layout_width="1dp"
+        android:background="@android:color/darker_gray"/>
+
+    <TextView
+        android:id="@+id/tvName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:padding="8dp" />
+
+    <View
+        android:layout_height="match_parent"
+        android:layout_width="1dp"
+        android:background="@android:color/darker_gray"/>
+
+    <TextView
+        android:id="@+id/tvTotalLectures"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:padding="8dp" />
+
+    <View
+        android:layout_height="match_parent"
+        android:layout_width="1dp"
+        android:background="@android:color/darker_gray"/>
+
+    <TextView
+        android:id="@+id/tvPresent"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:padding="8dp" />
+
+    <View
+        android:layout_height="match_parent"
+        android:layout_width="1dp"
+        android:background="@android:color/darker_gray"/>
+
+    <TextView
+        android:id="@+id/tvAttendance"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:padding="8dp" />
+
+    <View
+        android:layout_height="match_parent"
+        android:layout_width="1dp"
+        android:background="@android:color/darker_gray"/>
+
+    <TextView
+        android:id="@+id/tvInternalMark"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:padding="8dp" />
+    </LinearLayout>
+    <View
+        android:layout_height="1dp"
+        android:layout_width="match_parent"
+        android:background="@android:color/darker_gray"/>
+
+</LinearLayout>
+

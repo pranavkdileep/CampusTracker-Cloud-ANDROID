@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".StudentFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="3">
+
+            <Button
+                android:id="@+id/btnImport"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Import" />
+
+            <Button
+                android:id="@+id/btnRemove"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Remove" />
+
+            <Button
+                android:id="@+id/btnAdd"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Add" />
+        </LinearLayout>
+
+        <HorizontalScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scrollbars="horizontal">
+
+            <TableLayout
+                android:id="@+id/tableLayout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:divider="@android:color/darker_gray"
+                android:showDividers="middle"
+                android:dividerPadding="1dp"
+                android:stretchColumns="*">
+
+                <TableRow
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="#EEEEEE">
+
+                    <TextView
+                        android:text="ID"
+                        android:gravity="center"
+                        android:padding="8dp" />
+                    <View
+                        android:layout_height="match_parent"
+                        android:layout_width="1dp"
+                        android:background="@android:color/darker_gray"/>
+
+                    <TextView
+                        android:text="Name"
+                        android:gravity="center"
+                        android:padding="8dp" />
+                    <View
+                        android:layout_height="match_parent"
+                        android:layout_width="1dp"
+                        android:background="@android:color/darker_gray"/>
+
+                    <TextView
+                        android:text="Total Lectures"
+                        android:gravity="center"
+                        android:padding="8dp" />
+                    <View
+                        android:layout_height="match_parent"
+                        android:layout_width="1dp"
+                        android:background="@android:color/darker_gray"/>
+
+                    <TextView
+                        android:text="Present"
+                        android:gravity="center"
+                        android:padding="8dp" />
+                    <View
+                        android:layout_height="match_parent"
+                        android:layout_width="1dp"
+                        android:background="@android:color/darker_gray"/>
+
+                    <TextView
+                        android:text="Attendance %"
+                        android:gravity="center"
+                        android:padding="8dp" />
+                    <View
+                        android:layout_height="match_parent"
+                        android:layout_width="1dp"
+                        android:background="@android:color/darker_gray"/>
+
+                    <TextView
+                        android:text="Internal Mark"
+                        android:gravity="center"
+                        android:padding="8dp" />
+                </TableRow>
+            </TableLayout>
+        </HorizontalScrollView>
+
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:scrollbars="vertical" />
+
+    </LinearLayout>
+</FrameLayout>
