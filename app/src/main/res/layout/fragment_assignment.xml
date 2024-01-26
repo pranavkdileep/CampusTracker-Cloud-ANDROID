@@ -5,10 +5,61 @@
     android:layout_height="match_parent"
     tools:context=".AssignmentFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:orientation="vertical">
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Mark Bulk assignments Mark"
 
+            android:layout_gravity="center"
+            android:id="@+id/mark_bulk_assignments"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/rounded_button"
+            android:textColor="@color/white"></Button>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/tvAiisgnmentsNo"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@drawable/rounded_edittext"
+                android:hint="Search"
+                android:padding="10dp"
+                android:textColor="#000"
+                android:layout_weight="1"
+                android:textSize="18sp"
+                android:drawableLeft="@drawable/ic_search"
+                android:drawablePadding="10dp"
+                android:inputType="text" />
+
+            <Button
+                android:id="@+id/btn_get_list"
+                android:layout_width="wrap_content"
+                android:layout_marginLeft="5px"
+                android:layout_height="wrap_content"
+                android:background="@drawable/rounded_button"
+                android:padding="10dp"
+                android:text="Get List"
+                android:textColor="@color/white" />
+
+        </LinearLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView_attendance_list"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:scrollbars="vertical" />
+
+    </LinearLayout>
 </FrameLayout>

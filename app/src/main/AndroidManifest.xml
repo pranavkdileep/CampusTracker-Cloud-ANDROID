@@ -15,6 +15,12 @@
         android:theme="@style/Theme.CampusTrackerCloud"
         tools:targetApi="31">
         <activity
+            android:name=".BulkAssignmentsMark"
+            android:exported="false" />
+        <activity
+            android:name=".BulkInternalExamMark"
+            android:exported="false" />
+        <activity
             android:name=".MarkBulkAttendanve"
             android:exported="false" />
         <activity

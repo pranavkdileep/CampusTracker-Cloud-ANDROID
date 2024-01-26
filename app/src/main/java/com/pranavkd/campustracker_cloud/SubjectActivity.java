@@ -17,6 +17,7 @@ public class SubjectActivity extends AppCompatActivity {
     private TabLayout tabLayout;
     private ViewPager2 viewPager;
     public int subjectId;
+    public Bundle args = new Bundle();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,7 +31,7 @@ public class SubjectActivity extends AppCompatActivity {
         tabLayout = findViewById(R.id.tabLayout);
         viewPager = findViewById(R.id.viewPager);
         StudentFragment studentFragment = new StudentFragment(subjectId);
-        Bundle args = new Bundle();
+        args = new Bundle();
         args.putInt("subjectId", subjectId);
         studentFragment.setArguments(args);
 
@@ -79,14 +80,16 @@ public class SubjectActivity extends AppCompatActivity {
                     return new StudentFragment(subjectId);
                 case 1:
                     AttendanceFragment attendanceFragment = new AttendanceFragment();
-                    Bundle args = new Bundle();
-                    args.putInt("subjectId", subjectId);
                     attendanceFragment.setArguments(args);
                     return attendanceFragment;
                 case 2:
-                    return new InternalFragment();
+                    InternalFragment internalFragment = new InternalFragment();
+                    internalFragment.setArguments(args);
+                    return internalFragment;
                 case 3:
-                    return new AssignmentFragment();
+                    AssignmentFragment assignmentFragment = new AssignmentFragment();
+                    assignmentFragment.setArguments(args);
+                    return assignmentFragment;
                 case 4:
                     return new DownloadFragment();
                 default:

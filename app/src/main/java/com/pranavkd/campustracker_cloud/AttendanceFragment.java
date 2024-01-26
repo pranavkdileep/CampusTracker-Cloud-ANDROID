@@ -55,7 +55,7 @@ public class AttendanceFragment extends Fragment {
             subjectId=getArguments().getInt("subjectId");
         }
          apihelper = new getAttendanceApi(subjectId,getContext(),this);
-            apihelper1 = new Apihelper(getContext());
+        apihelper1 = new Apihelper(getContext());
 
     }
 

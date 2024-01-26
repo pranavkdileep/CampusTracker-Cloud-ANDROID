@@ -18,11 +18,15 @@ import android.widget.Toast;
 
 
 import com.google.gson.Gson;
+import com.pranavkd.campustracker_cloud.apicaller.GetinternalsApi;
 import com.pranavkd.campustracker_cloud.apicaller.getPerfomance;
-import com.pranavkd.campustracker_cloud.data.PerfomanceStudents;
+import com.pranavkd.campustracker_cloud.data.BulkAssignment;
+import com.pranavkd.campustracker_cloud.data.BulkInternals;
+import com.pranavkd.campustracker_cloud.data.InternallistData;
 import com.pranavkd.campustracker_cloud.data.Subject;
 import com.pranavkd.campustracker_cloud.data.BulkAttendance;
-import com.pranavkd.campustracker_cloud.data.studentAttendance;
+import com.pranavkd.campustracker_cloud.interfaces.ApiHelperLoaded;
+import com.pranavkd.campustracker_cloud.interfaces.OnApiLoaded;
 
 import java.util.List;
 
@@ -34,7 +38,10 @@ interface Api {
 public class Apihelper {
     final String url;
     final String key;
+    GetinternalsApi getinternalsApi;
+    OnApiLoaded onApiLoadedListener;
     List<Subject> subjects;
+    List<InternallistData> internallistDataList;
     MainActivity main;
     private String responseData;
     Response response;
@@ -354,7 +361,181 @@ public class Apihelper {
             Thread.currentThread().interrupt();
         }
     }
-    List<studentAttendance> studentAttendanceList;
 
+    public void updateInternal(int attId, int newinternalmark, int subject_id, int internalno, OnApiLoaded onApiLoadedListener) {
+        Thread t = new Thread(() -> {
+            okhttp3.Response response = null;
+            String responseData = null;
 
+            try {
+                OkHttpClient client = new OkHttpClient();
+                MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("internal_id", attId);
+                jsonObject.put("marks_obtained", newinternalmark);
+                RequestBody body = RequestBody.create(JSON, jsonObject.toString());
+                Request request = new Request.Builder()
+                        .url(url + "updateinternal")
+                        .post(body)
+                        .addHeader("accept", "application/json")
+                        .addHeader("Authorization", "Bearer " + key)
+                        .addHeader("Content-Type", "application/json")
+                        .build();
+
+                response = client.newCall(request).execute();
+
+                if (response.isSuccessful()) {
+                    responseData = response.body().string();
+                    getinternalsApi = new GetinternalsApi(subject_id, internalno, new OnApiLoaded() {
+                        @Override
+                        public void onApiLoaded(List<InternallistData> internallistData) {
+                            internallistDataList = internallistData;
+                            onApiLoadedListener.onApiLoaded(internallistDataList);
+                        }
+                    });
+                    internallistDataList = getinternalsApi.getInternals();
+                } else {
+                    // Handle unsuccessful response
+                }
+            } catch (Exception e) {
+                // Handle exception
+            } finally {
+                if (response != null) {
+                    response.close();
+                }
+            }
+        });
+        t.start();
+        try {
+            t.join();
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+    }
+    public void addBulkInternals(int subject_id, int internalNo, int max_mark, List<BulkInternals> bulkInternals, ApiHelperLoaded apiHelperLoaded) {
+        Thread t = new Thread(()->{
+        try {
+            okhttp3.Response response = null;
+            String responseData = null;
+            OkHttpClient client = new OkHttpClient();
+            MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("subject_id", subject_id);
+            jsonObject.put("internal_number", internalNo);
+            jsonObject.put("max_marks", max_mark);
+            Gson gson = new Gson();
+            String bulkInternalsJson = gson.toJson(bulkInternals);
+            JSONArray bulkInternalsJsonArray = new JSONArray(bulkInternalsJson);
+            jsonObject.put("bulk_internal", bulkInternalsJsonArray);
+            RequestBody body = RequestBody.create(JSON, jsonObject.toString());
+            Request request = new Request.Builder()
+                    .url(url + "addbulkinternal")
+                    .post(body)
+                    .addHeader("accept", "application/json")
+                    .addHeader("Authorization", "Bearer " + key)
+                    .addHeader("Content-Type", "application/json")
+                    .build();
+
+            response = client.newCall(request).execute();
+
+            if (response.isSuccessful()) {
+                responseData = response.body().string();
+                apiHelperLoaded.onApiHelperLoaded();
+            } else {
+                Log.e("response", response.toString());
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+
+        }
+        });
+        t.start();
+    }
+
+    public void updateAssignment(int attId, int i, ApiHelperLoaded assignmentUpdated) {
+        Thread t = new Thread(() -> {
+            okhttp3.Response response = null;
+            String responseData = null;
+
+            try {
+                OkHttpClient client = new OkHttpClient();
+                MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("assignment_id", attId);
+                jsonObject.put("marks_obtained", i);
+                RequestBody body = RequestBody.create(JSON, jsonObject.toString());
+                Request request = new Request.Builder()
+                        .url(url + "updateassignment")
+                        .post(body)
+                        .addHeader("accept", "application/json")
+                        .addHeader("Authorization", "Bearer " + key)
+                        .addHeader("Content-Type", "application/json")
+                        .build();
+
+                response = client.newCall(request).execute();
+
+                if (response.isSuccessful()) {
+                    responseData = response.body().string();
+                    assignmentUpdated.onApiHelperLoaded();
+                } else {
+                    // Handle unsuccessful response
+                }
+            } catch (Exception e) {
+                // Handle exception
+            } finally {
+                if (response != null) {
+                    response.close();
+                }
+            }
+        });
+        t.start();
+    }
+
+    public void addBulkAssignment(int subjectidIntInt, int assignemtIntInt, int maxMarkIntInt, List<BulkAssignment> bulkAssignmentList, ApiHelperLoaded bulkAssignmentMarksAdded) {
+        Thread t = new Thread(() -> {
+            okhttp3.Response response = null;
+            String responseData = null;
+
+            try {
+                OkHttpClient client = new OkHttpClient();
+                MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("subject_id", subjectidIntInt);
+                jsonObject.put("assignment_number", assignemtIntInt);
+                jsonObject.put("max_marks", maxMarkIntInt);
+                Gson gson = new Gson();
+                String bulkAssignmentJson = gson.toJson(bulkAssignmentList);
+                JSONArray bulkAssignmentJsonArray = new JSONArray(bulkAssignmentJson);
+                jsonObject.put("bulk_assignment", bulkAssignmentJsonArray);
+                Log.e("json", jsonObject.toString());
+                RequestBody body = RequestBody.create(JSON, jsonObject.toString());
+                Request request = new Request.Builder()
+                        .url(url + "addbulkassignment")
+                        .post(body)
+                        .addHeader("accept", "application/json")
+                        .addHeader("Authorization", "Bearer " + key)
+                        .addHeader("Content-Type", "application/json")
+                        .build();
+
+                response = client.newCall(request).execute();
+
+                if (response.isSuccessful()) {
+                    responseData = response.body().string();
+                    bulkAssignmentMarksAdded.onApiHelperLoaded();
+                } else {
+                    Log.d("response", response.toString());
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                if (response != null) {
+                    response.close();
+                }
+            }
+        });
+        t.start();
+    }
 }
