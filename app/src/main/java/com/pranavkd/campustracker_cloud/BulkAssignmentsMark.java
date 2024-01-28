@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.pranavkd.campustracker_cloud.apicaller.getPerfomance;
@@ -33,12 +34,14 @@ public class BulkAssignmentsMark extends AppCompatActivity {
     List<BulkAssignment> bulkAssignmentList;
     getPerfomance getPerfomanceInstance;
     Apihelper apihelper;
+    ProgressBar loadingBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bulk_assignments_mark);
         subject = findViewById(R.id.subid);
+        loadingBar = findViewById(R.id.loadingBar);
         assignmentNo = findViewById(R.id.assignementno);
         maxmark = findViewById(R.id.maxmarks);
         recyclerView = findViewById(R.id.recyclerView_student_list);
@@ -48,6 +51,7 @@ public class BulkAssignmentsMark extends AppCompatActivity {
         subject.setText(subjectidstring);
         subjectidIntInt = Integer.parseInt(subjectidstring);
         getPerfomanceInstance = new getPerfomance(this);
+        loadingBar.setVisibility(View.VISIBLE);
         getPerfomanceInstance.getStudentList(subjectidIntInt, new OnStudentsLoadedListener() {
             @Override
             public void onStudentsLoaded(List<PerfomanceStudents> perfomanceStudentsList) {
@@ -109,5 +113,6 @@ public class BulkAssignmentsMark extends AppCompatActivity {
             }
         });
         recyclerView.setAdapter(bulkAssignmentAdapter);
+        loadingBar.setVisibility(View.GONE);
     }
 }

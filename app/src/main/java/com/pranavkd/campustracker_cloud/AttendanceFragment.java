@@ -1,6 +1,7 @@
 package com.pranavkd.campustracker_cloud;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -13,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -38,6 +40,7 @@ public class AttendanceFragment extends Fragment {
     List<studentAttendance> studentAttendanceList;
     Dialog dialog;
     Apihelper apihelper1;
+    ProgressBar loadingProgressBar;
 
     public AttendanceFragment() {
         // Required empty public constructor
@@ -69,6 +72,8 @@ public class AttendanceFragment extends Fragment {
         getAttendance = view.findViewById(R.id.btn_get_list);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(attendanceAdapter);
+        loadingProgressBar = view.findViewById(R.id.loadingProgressBar);
+        //loadingProgressBar.setVisibility(View.VISIBLE);
         getAttendance.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -79,9 +84,9 @@ public class AttendanceFragment extends Fragment {
                 else
                 {
                     int id = Integer.parseInt(studentId.getText().toString());
-                    studentAttendanceList = apihelper.getAttendance(id,getContext());
-                    updateList(studentAttendanceList);
+                    getlist(id,getContext());
                     recyclerView.setAdapter(attendanceAdapter);
+                    loadingProgressBar.setVisibility(View.VISIBLE);
                 }
             }
         });
@@ -99,8 +104,22 @@ public class AttendanceFragment extends Fragment {
         });
         return view;
     }
+
+    private void getlist(int id, Context context) {
+        loadingProgressBar.setVisibility(View.VISIBLE);
+        if(loadingProgressBar.getVisibility()==View.VISIBLE)
+        {
+            apihelper.getAttendance(id,context);
+        }
+        else
+        {
+            Toast.makeText(getContext(),"Please wait for the previous request to complete",Toast.LENGTH_SHORT).show();
+        }
+    }
+
     public void updateList(List<studentAttendance> studentAttendances)
     {
+        loadingProgressBar.setVisibility(View.GONE);
         this.studentAttendanceList = studentAttendances;
         attendanceAdapter = new AttendanceAdapter(studentAttendanceList, new onEditAtt() {
             @Override
@@ -135,6 +154,7 @@ public class AttendanceFragment extends Fragment {
                 }
                 apihelper1.updateAttendance(attendanceId,flag);
                 dialog.dismiss();
+                getlist(Integer.parseInt(studentId.getText().toString()),getContext());
             }
         });
         close.setOnClickListener(new View.OnClickListener() {

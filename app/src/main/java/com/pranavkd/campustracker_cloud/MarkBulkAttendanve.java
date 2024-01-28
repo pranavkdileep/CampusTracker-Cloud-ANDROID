@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -37,6 +38,7 @@ public class MarkBulkAttendanve extends AppCompatActivity {
     getPerfomance getPerfomanceInstance;
     Apihelper apihelper;
     Button submit;
+    ProgressBar loadingBar;
     Dialog dialog;
     String absString ="";
     int[] absentStudents;
@@ -64,6 +66,8 @@ public class MarkBulkAttendanve extends AppCompatActivity {
         getPerfomanceInstance = new getPerfomance(this, this);
         recyclerView = findViewById(R.id.recyclerView_student_list);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        loadingBar = findViewById(R.id.loadingBar);
+        loadingBar.setVisibility(View.VISIBLE);
         getPerfomanceInstance.getStudentList(subjectIdInt, new OnStudentsLoadedListener() {
             @Override
             public void onStudentsLoaded(List<PerfomanceStudents> students) {
@@ -95,7 +99,7 @@ public class MarkBulkAttendanve extends AppCompatActivity {
                 }
                 if (!alreadyExists) {
                     bulkAttendanceList.add(new BulkAttendance(student.getStudentId(), true));
-                    Log.e("student", student.getStudentName());
+
                 }
             }
         }
@@ -112,6 +116,7 @@ public class MarkBulkAttendanve extends AppCompatActivity {
         });
         recyclerView.setAdapter(bulkAttendanceAdapter);
         bulkAttendanceAdapter.notifyDataSetChanged();
+        loadingBar.setVisibility(View.GONE);
     }
     public void submit(List<BulkAttendance> bulkAttendanceList)
     {
@@ -138,6 +143,8 @@ public class MarkBulkAttendanve extends AppCompatActivity {
             public void onClick(View v) {
                 apihelper.addBulkAttantance(subjectIdInt, date, bulkAttendanceList);
                 dialog.dismiss();
+                Toast.makeText(MarkBulkAttendanve.this, "Attendance Marked", Toast.LENGTH_SHORT).show();
+                finish();
             }
         });
         close.setOnClickListener(new View.OnClickListener() {

@@ -3,12 +3,19 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:weightSum="6">
-    <LinearLayout
+    android:weightSum="6"
+    android:background="#F5F5F5">
+
+    <HorizontalScrollView
         android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:weightSum="6">
+        android:weightSum="6"
+        android:padding="8dp">
 
         <TextView
             android:id="@+id/tvId"
@@ -16,6 +23,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
+            android:visibility="gone"
             android:padding="8dp" />
 
         <View
@@ -25,7 +33,7 @@
 
         <TextView
             android:id="@+id/tvName"
-            android:layout_width="0dp"
+            android:layout_width="150dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
@@ -38,7 +46,7 @@
 
         <TextView
             android:id="@+id/tvPosition"
-            android:layout_width="0dp"
+            android:layout_width="55dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
@@ -49,27 +57,33 @@
             android:layout_width="1dp"
             android:background="@android:color/darker_gray"/>
 
-
-
-        <View
-            android:layout_height="match_parent"
-            android:layout_width="1dp"
-            android:background="@android:color/darker_gray"/>
-
-        <EditText
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="70dp"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:gravity="center"
-            android:hint="Mark"
-            android:id="@+id/etMark"
-            android:padding="8dp" />
+            android:layout_marginEnd="8dp"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etMark"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Mark"
+                android:inputType="number"
+                android:gravity="center"
+                android:padding="8dp" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnSave"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Save"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton" />
     </LinearLayout>
+    </HorizontalScrollView>
     <View
         android:layout_height="1dp"
         android:layout_width="match_parent"
         android:background="@android:color/darker_gray"/>
-
 </LinearLayout>
-

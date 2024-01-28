@@ -33,14 +33,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:background="@drawable/rounded_edittext"
-                android:hint="Search"
+                android:hint="Internal No"
                 android:padding="10dp"
                 android:textColor="#000"
                 android:layout_weight="1"
                 android:textSize="18sp"
                 android:drawableLeft="@drawable/ic_search"
                 android:drawablePadding="10dp"
-                android:inputType="text" />
+                android:inputType="number" />
 
             <Button
                 android:id="@+id/btn_get_list"
@@ -53,6 +53,95 @@
                 android:textColor="@color/white" />
 
         </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TableLayout
+                android:id="@+id/tableLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:divider="@android:color/darker_gray"
+                android:showDividers="middle"
+                android:dividerPadding="1dp"
+                android:stretchColumns="*">
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="#EEEEEE">
+
+                    <TextView
+                        android:text="ID"
+                        android:gravity="center"
+                        android:padding="8dp"
+                        android:layout_weight="1" />
+
+                    <View
+                        android:layout_height="match_parent"
+                        android:layout_width="1dp"
+                        android:background="@android:color/darker_gray"/>
+
+                    <TextView
+                        android:text="Name"
+                        android:gravity="center"
+                        android:padding="8dp"
+                        android:layout_weight="1" />
+
+                    <View
+                        android:layout_height="match_parent"
+                        android:layout_width="1dp"
+                        android:background="@android:color/darker_gray"/>
+
+                    <TextView
+                        android:text="Data Id"
+                        android:gravity="center"
+                        android:padding="8dp"
+                        android:layout_weight="1" />
+
+                    <View
+                        android:layout_height="match_parent"
+                        android:layout_width="1dp"
+                        android:background="@android:color/darker_gray"/>
+
+                    <TextView
+                        android:text="Max Marks"
+                        android:gravity="center"
+                        android:padding="8dp"
+                        android:layout_weight="1" />
+
+                    <View
+                        android:layout_height="match_parent"
+                        android:layout_width="1dp"
+                        android:background="@android:color/darker_gray"/>
+
+                    <TextView
+                        android:text="Scored"
+                        android:gravity="center"
+                        android:padding="8dp"
+                        android:layout_weight="1" />
+
+                    <View
+                        android:layout_height="match_parent"
+                        android:layout_width="1dp"
+                        android:background="@android:color/darker_gray"/>
+
+                    <TextView
+                        android:text="Edit Recorde"
+                        android:gravity="center"
+                        android:padding="8dp"
+                        android:layout_weight="1" />
+                </TableRow>
+            </TableLayout>
+        </LinearLayout>
+        <ProgressBar
+            android:id="@+id/loadingProgressBar"
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:visibility="gone" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerView_internal_list"

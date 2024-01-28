@@ -3,19 +3,23 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:weightSum="6">
+    android:weightSum="6"
+    android:background="#F5F5F5">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:weightSum="6">
+        android:weightSum="6"
+        android:padding="8dp">
 
         <TextView
             android:id="@+id/tvId"
-            android:layout_width="0dp"
+            android:layout_width="25dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
+            android:visibility="gone"
             android:padding="8dp" />
 
         <View
@@ -25,7 +29,7 @@
 
         <TextView
             android:id="@+id/tvName"
-            android:layout_width="0dp"
+            android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
@@ -38,7 +42,7 @@
 
         <TextView
             android:id="@+id/tvPosition"
-            android:layout_width="0dp"
+            android:layout_width="50dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
@@ -49,26 +53,15 @@
             android:layout_width="1dp"
             android:background="@android:color/darker_gray"/>
 
-
-
-        <View
-            android:layout_height="match_parent"
-            android:layout_width="1dp"
-            android:background="@android:color/darker_gray"/>
-
-       <Switch
-           android:layout_width="wrap_content"
-           android:layout_height="wrap_content"
-           android:id="@+id/switch1"
-           android:checked="true"
-           >
-
-       </Switch>
+        <Switch
+            android:id="@+id/switch1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="true" />
     </LinearLayout>
+
     <View
         android:layout_height="1dp"
         android:layout_width="match_parent"
         android:background="@android:color/darker_gray"/>
-
 </LinearLayout>
-

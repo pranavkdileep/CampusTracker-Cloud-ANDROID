@@ -3,12 +3,15 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:weightSum="6">
+    android:weightSum="6"
+    android:background="#F5F5F5">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:weightSum="6">
+        android:weightSum="6"
+        android:padding="8dp">
 
         <TextView
             android:id="@+id/tvId"
@@ -88,4 +91,3 @@
         android:background="@android:color/darker_gray"/>
 
 </LinearLayout>
-

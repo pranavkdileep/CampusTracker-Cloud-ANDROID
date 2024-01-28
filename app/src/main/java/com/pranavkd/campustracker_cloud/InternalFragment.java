@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.pranavkd.campustracker_cloud.apicaller.GetinternalsApi;
@@ -36,6 +37,7 @@ public class InternalFragment extends Fragment {
     Apihelper apihelper;
     InternalAdapter internalAdapter;
     List<InternallistData> internallistDataList;
+    ProgressBar progressBar;
     InternalAdapter internalAdapter1;
     public InternalFragment() {
         // Required empty public constructor
@@ -64,6 +66,7 @@ public class InternalFragment extends Fragment {
     recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
     internalno = view.findViewById(R.id.student_id);
     getInternal = view.findViewById(R.id.btn_get_list);
+    progressBar = view.findViewById(R.id.loadingProgressBar);
     Button bulkInternal = view.findViewById(R.id.mark_bulk_internals);
     bulkInternal.setOnClickListener(new View.OnClickListener() {
         @Override
@@ -82,6 +85,7 @@ public class InternalFragment extends Fragment {
             }
             else
             {
+                progressBar.setVisibility(View.VISIBLE);
                 getdata();
             }
         }
@@ -109,6 +113,7 @@ public class InternalFragment extends Fragment {
             }
         });
         recyclerView.setAdapter(internalAdapter);
+        progressBar.setVisibility(View.GONE);
     }
 
     private void updateInternals(int attId) {
@@ -135,6 +140,7 @@ public class InternalFragment extends Fragment {
                             dialog.dismiss();
                         }
                     });
+                    progressBar.setVisibility(View.VISIBLE);
                     getdata();
                     dialog.dismiss();
                 }

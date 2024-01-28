@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.pranavkd.campustracker_cloud.apicaller.getPerfomance;
@@ -38,6 +39,7 @@ public class BulkInternalExamMark extends AppCompatActivity {
     Apihelper apihelper;
     RecyclerView recyclerView;
     Button submit;
+    ProgressBar loadingBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +47,7 @@ public class BulkInternalExamMark extends AppCompatActivity {
         setContentView(R.layout.activity_bulk_internal_exam_mark);
         subjectId = findViewById(R.id.subid);
         internalNo = findViewById(R.id.internalno);
+        loadingBar = findViewById(R.id.loadingBar);
         Intent intent = getIntent();
         subjectIdInt = intent.getIntExtra("subjectId",0);
         subjectId.setText(Integer.toString(subjectIdInt));
@@ -52,6 +55,7 @@ public class BulkInternalExamMark extends AppCompatActivity {
         recyclerView = findViewById(R.id.recyclerView_student_list);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         getPerfomanceInstance = new getPerfomance(this);
+        loadingBar.setVisibility(View.VISIBLE);
         getPerfomanceInstance.getStudentList(subjectIdInt, new OnStudentsLoadedListener() {
             @Override
             public void onStudentsLoaded(List<PerfomanceStudents> perfomanceStudentsList) {
@@ -116,5 +120,6 @@ public class BulkInternalExamMark extends AppCompatActivity {
             }
         });
         recyclerView.setAdapter(bulkInternalAdapter);
+        loadingBar.setVisibility(View.GONE);
     }
 }

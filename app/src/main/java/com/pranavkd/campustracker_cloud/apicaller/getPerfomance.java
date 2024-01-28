@@ -81,7 +81,7 @@ public class getPerfomance {
 
         getPer getPerInstance = retrofit.create(getPer.class);
 
-        Call<List<PerfomanceStudents>> call = getPerInstance.getPerfomance(subject_id);
+        Call<List<PerfomanceStudents>> call = getPerInstance.getPerfomancedumy(subject_id);
 
         call.enqueue(new Callback<List<PerfomanceStudents>>() {
             @Override

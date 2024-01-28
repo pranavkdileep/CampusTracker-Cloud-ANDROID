@@ -52,9 +52,7 @@ public class SubjectActivity extends AppCompatActivity {
                 case 3:
                     tab.setText("Assignment");
                     break;
-                case 4:
-                    tab.setText("Download");
-                    break;
+
             }
         }).attach();
     }
@@ -90,8 +88,6 @@ public class SubjectActivity extends AppCompatActivity {
                     AssignmentFragment assignmentFragment = new AssignmentFragment();
                     assignmentFragment.setArguments(args);
                     return assignmentFragment;
-                case 4:
-                    return new DownloadFragment();
                 default:
                     return new Fragment(); // This case should never happen
             }
@@ -99,7 +95,7 @@ public class SubjectActivity extends AppCompatActivity {
 
         @Override
         public int getItemCount() {
-            return 5; // Since we have 5 tabs
+            return 4; // Since we have 5 tabs
         }
     }
 }

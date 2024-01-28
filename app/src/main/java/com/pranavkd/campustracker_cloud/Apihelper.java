@@ -1,4 +1,5 @@
 package com.pranavkd.campustracker_cloud;
+import okhttp3.MultipartBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -28,6 +29,8 @@ import com.pranavkd.campustracker_cloud.data.BulkAttendance;
 import com.pranavkd.campustracker_cloud.interfaces.ApiHelperLoaded;
 import com.pranavkd.campustracker_cloud.interfaces.OnApiLoaded;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 interface Api {
@@ -428,6 +431,7 @@ public class Apihelper {
             JSONArray bulkInternalsJsonArray = new JSONArray(bulkInternalsJson);
             jsonObject.put("bulk_internal", bulkInternalsJsonArray);
             RequestBody body = RequestBody.create(JSON, jsonObject.toString());
+            Log.e("json", jsonObject.toString());
             Request request = new Request.Builder()
                     .url(url + "addbulkinternal")
                     .post(body)
@@ -538,4 +542,49 @@ public class Apihelper {
         });
         t.start();
     }
+
+
+    public void uploadStudentsListXls(int subjectId, File file, ApiHelperLoaded uploaded) {
+        Thread t = new Thread(() -> {
+            okhttp3.Response response = null;
+            String responseData = null;
+            try {
+                OkHttpClient client = new OkHttpClient();
+                RequestBody requestBody = new MultipartBody.Builder()
+                        .setType(MultipartBody.FORM)
+                        .addFormDataPart("file", file.getName(), RequestBody.create(MediaType.parse("multipart/form-data"), file))
+                        .build();
+                Log.e("json", requestBody.toString());
+                Request request = new Request.Builder()
+                        .url(url + "uploadstudentslist"+"/"+subjectId)
+                        .post(requestBody)
+                        .addHeader("accept", "application/json")
+                        .addHeader("Authorization", "Bearer " + key)
+                        .addHeader("Content-Type", "multipart/form-data")
+                        .build();
+
+                response = client.newCall(request).execute();
+
+                if (response.isSuccessful()) {
+                    responseData = response.body().string();
+                    uploaded.onApiHelperLoaded();
+                } else {
+                    Log.d("response", response.toString());
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                if (response != null) {
+                    response.close();
+                }
+            }
+        });
+        t.start();
+    }
 }
+
+
+
+
+

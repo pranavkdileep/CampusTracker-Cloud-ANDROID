@@ -8,9 +8,11 @@ import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -25,13 +27,16 @@ public class MainActivity extends AppCompatActivity {
     Dialog dialog;
     private RecyclerView subjectsRecyclerView;
     private SubjectsAdapter adapter;
+    Button logout_button;
     List<Subject> subjects;
+    ProgressBar progressBar;
 
     private Apihelper apihelper;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        progressBar = findViewById(R.id.progressBar);
         subjectsRecyclerView = findViewById(R.id.classes_recycler_view);
         subjectsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         apihelper = new Apihelper(this,this);
@@ -40,6 +45,11 @@ public class MainActivity extends AppCompatActivity {
         FloatingActionButton fab = findViewById(R.id.floatingActionButton);
         fab.setOnClickListener(view -> {
             addSubjects();
+        });
+        logout_button = findViewById(R.id.logout_button);
+        logout_button.setOnClickListener(view -> {
+            Intent intent = new Intent(MainActivity.this, Login.class);
+            startActivity(intent);
         });
     }
 
@@ -62,11 +72,12 @@ public class MainActivity extends AppCompatActivity {
         dialog.show();
         btn_add.setOnClickListener(view -> {
             String subjectNameText = subjectname.getText().toString();
+            btn_add.setVisibility(View.GONE);
             if (subjectNameText.isEmpty()) {
                 // Check if the subject name is empty
                 Toast.makeText(MainActivity.this, "Please enter a subject name", Toast.LENGTH_SHORT).show();
             } else {
-                // Add the subject to the database
+                progressBar.setVisibility(View.VISIBLE);
                 apihelper.addSubject(subjectNameText,this);
                 dialog.dismiss();
             }
@@ -79,10 +90,17 @@ public class MainActivity extends AppCompatActivity {
 
     public void updateSubjects(List<Subject> subjects) {
         this.subjects = subjects;
+        progressBar.setVisibility(View.GONE);
         adapter = new SubjectsAdapter(subjects, new OnDeleteClickListener() {
             @Override
             public void onDeleteClick(int subjectId) {
-                apihelper.deleteSubject(subjectId, MainActivity.this);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        progressBar.setVisibility(View.VISIBLE);
+                        apihelper.deleteSubject(subjectId, MainActivity.this);
+                    }
+                });
             }
         }, new OnSubClickListener() {
             @Override

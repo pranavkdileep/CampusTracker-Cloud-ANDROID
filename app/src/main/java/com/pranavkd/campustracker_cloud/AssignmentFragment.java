@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.pranavkd.campustracker_cloud.apicaller.GetAssigmentMaarkListApi;
@@ -40,6 +41,7 @@ public class AssignmentFragment extends Fragment {
     AssignmentAdapter assignmentAdapter;
     Dialog dialog;
     Apihelper apihelper1;
+    ProgressBar progressBar;
 
     public AssignmentFragment() {
         // Required empty public constructor
@@ -71,6 +73,7 @@ public class AssignmentFragment extends Fragment {
         getassignment = view.findViewById(R.id.btn_get_list);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         subjectId = getArguments().getInt("subjectId");
+        progressBar = view.findViewById(R.id.loadingProgressBar);
         Button bulk = view.findViewById(R.id.mark_bulk_assignments);
         bulk.setOnClickListener(new View.OnClickListener(){
 
@@ -84,6 +87,7 @@ public class AssignmentFragment extends Fragment {
         getassignment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                progressBar.setVisibility(View.VISIBLE);
                 apihelper = new GetAssigmentMaarkListApi(subjectId,Integer.parseInt(assignmentNo.getText().toString()),getContext());
                 apihelper.getAssignmentMarkList(new AssignmentData() {
                     @Override
@@ -105,6 +109,7 @@ public class AssignmentFragment extends Fragment {
             }
         });
         recyclerView.setAdapter(assignmentAdapter);
+        progressBar.setVisibility(View.GONE);
     }
 
     private void updateassignment(int attId) {
@@ -117,6 +122,7 @@ public class AssignmentFragment extends Fragment {
         update.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                progressBar.setVisibility(View.VISIBLE);
                 apihelper1 = new Apihelper(getContext());
                 apihelper1.updateAssignment(attId, Integer.parseInt(marks.getText().toString()), new ApiHelperLoaded() {
                     @Override
@@ -126,6 +132,13 @@ public class AssignmentFragment extends Fragment {
                             public void run() {
                                 Toast.makeText(getContext(),"Updated",Toast.LENGTH_SHORT).show();
                                 dialog.dismiss();
+                                apihelper = new GetAssigmentMaarkListApi(subjectId,Integer.parseInt(assignmentNo.getText().toString()),getContext());
+                                apihelper.getAssignmentMarkList(new AssignmentData() {
+                                    @Override
+                                    public void onAssignmentDataLoaded(List<AssignmentsDateList> assignmentsDateList) {
+                                        updateUi(assignmentsDateList);
+                                    }
+                                });
                             }
                         });
                     }

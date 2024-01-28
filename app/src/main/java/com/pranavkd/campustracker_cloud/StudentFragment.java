@@ -2,23 +2,42 @@ package com.pranavkd.campustracker_cloud;
 
 import static androidx.appcompat.content.res.AppCompatResources.getDrawable;
 
+import android.app.Activity;
 import android.app.Dialog;
+import android.content.Context;
+import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.browser.customtabs.CustomTabsIntent;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.provider.OpenableColumns;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.pranavkd.campustracker_cloud.apicaller.getPerfomance;
 import com.pranavkd.campustracker_cloud.data.PerfomanceStudents;
+import com.pranavkd.campustracker_cloud.interfaces.ApiHelperLoaded;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,6 +47,11 @@ public class StudentFragment extends Fragment {
     RecyclerView recyclerView;
     Button addStudent, deleteStudent,importStudent;
     Dialog dialog;
+    Dialog importDialog;
+    ActivityResultLauncher<String> mGetContent;
+    ProgressBar loadingProgressBar;
+    ProgressBar progressBarDialog;
+    Button selectFile;
     Dialog deleteDialog;
     List<PerfomanceStudents> perfomanceStudentsList;
 
@@ -59,9 +83,81 @@ public class StudentFragment extends Fragment {
         deleteDialog.getWindow().setBackgroundDrawable(getDrawable(getContext(),R.drawable.dialogbackground));
         deleteDialog.setCancelable(false);
 
+        mGetContent = registerForActivityResult(new ActivityResultContracts.GetContent(), new ActivityResultCallback<Uri>() {
+            @Override
+            public void onActivityResult(Uri o) {
+                String filename = getFileName(o);
+                Log.e("TAG", "onActivityResult: "+filename );
+                if(o != null)
+                {
+                    try {
+                        InputStream inputStream = getActivity().getContentResolver().openInputStream(o);
+                        File file = new File(getActivity().getCacheDir(), filename);
+                        writeFile(inputStream, file);
+                        Log.e("TAG", "onActivityResult: "+file.getName() );
+                        selectFile.setVisibility(View.GONE);
+                        progressBarDialog.setVisibility(View.VISIBLE);
+                        Apihelper apihelper = new Apihelper(getContext());
+                        apihelper.uploadStudentsListXls(subjectId, file, new ApiHelperLoaded() {
+                            @Override
+                            public void onApiHelperLoaded() {
+                                getActivity().runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        progressBarDialog.setVisibility(View.GONE);
+                                        selectFile.setVisibility(View.VISIBLE);
+                                        importDialog.dismiss();
+                                        getPerfomance getPerfomance = new getPerfomance(getContext(), StudentFragment.this);
+                                        getPerfomance.getData(subjectId, getContext());
+                                        loadingProgressBar.setVisibility(View.VISIBLE);
+                                    }
+                                });
+                            }
+                        });
 
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    }
+                }
+                else
+                {
+                    Log.e("TAG", "onActivityResult: "+o.getPath() );
+                }
+            }
+        });
 
-
+    }
+    private void writeFile(InputStream in, File file) {
+        try (OutputStream out = new FileOutputStream(file)) {
+            byte[] buf = new byte[1024];
+            int len;
+            while ((len = in.read(buf)) > 0) {
+                out.write(buf, 0, len);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    private String getFileName(Uri uri) {
+        String result = null;
+        if (uri.getScheme().equals("content")) {
+            Cursor cursor = getActivity().getContentResolver().query(uri, null, null, null, null);
+            try {
+                if (cursor != null && cursor.moveToFirst()) {
+                    result = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME));
+                }
+            } finally {
+                cursor.close();
+            }
+        }
+        if (result == null) {
+            result = uri.getPath();
+            int cut = result.lastIndexOf('/');
+            if (cut != -1) {
+                result = result.substring(cut + 1);
+            }
+        }
+        return result;
     }
     public void updateAdapter(List<PerfomanceStudents> perfomanceStudents)
     {
@@ -69,6 +165,7 @@ public class StudentFragment extends Fragment {
         if (recyclerView != null) { // Check if recyclerView is not null
             PerformanceAdapter adapter = new PerformanceAdapter(perfomanceStudents);
             recyclerView.setAdapter(adapter);
+            loadingProgressBar.setVisibility(View.GONE);
             adapter.notifyDataSetChanged();
         }
     }
@@ -80,6 +177,9 @@ public class StudentFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_student, container, false);
 
         recyclerView = view.findViewById(R.id.recyclerView);
+        loadingProgressBar = view.findViewById(R.id.loadingProgressBar);
+        loadingProgressBar.setVisibility(View.VISIBLE);
+
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(new PerformanceAdapter(new ArrayList<>())); // Initialize with an empty list
@@ -91,6 +191,12 @@ public class StudentFragment extends Fragment {
         addStudent = view.findViewById(R.id.btnAdd);
         deleteStudent = view.findViewById(R.id.btnRemove);
         importStudent = view.findViewById(R.id.btnImport);
+        importStudent.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                importstudent(subjectId,getContext());
+            }
+        });
         addStudent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -114,11 +220,13 @@ public class StudentFragment extends Fragment {
                 if (studentName.isEmpty()) {
                     Toast.makeText(getContext(), "Please enter a name", Toast.LENGTH_SHORT).show();
                 } else {
+                    // desable the add button
                     Apihelper apihelper = new Apihelper(getContext());
                     apihelper.add_student(studentName, subjectId, getContext());
                     getPerfomance getPerfomance = new getPerfomance(getContext(), StudentFragment.this);
                     getPerfomance.getData(subjectId, getContext());
                     dialog.dismiss();
+                    loadingProgressBar.setVisibility(View.VISIBLE);
                 }
             }
         });
@@ -144,6 +252,7 @@ public class StudentFragment extends Fragment {
                 if (studentIdString.isEmpty()) {
                     Toast.makeText(getContext(), "Please enter a student ID", Toast.LENGTH_SHORT).show();
                 } else {
+                    loadingProgressBar.setVisibility(View.VISIBLE);
                     Apihelper apihelper = new Apihelper(getContext());
                     apihelper.delete_student(Integer.parseInt(studentIdString), getContext(),subjectId);
                     getPerfomance getPerfomance = new getPerfomance(getContext(), StudentFragment.this);
@@ -154,5 +263,30 @@ public class StudentFragment extends Fragment {
         });
 
         return view;
+    }
+
+    private void importstudent(int subjectId, Context context) {
+        importDialog = new Dialog(context);
+        importDialog.setContentView(R.layout.uploadlist);
+        importDialog.getWindow().setLayout(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        importDialog.getWindow().setBackgroundDrawable(getDrawable(context,R.drawable.dialogbackground));
+        importDialog.show();
+        showfilepremission();
+        selectFile = importDialog.findViewById(R.id.select_file_button);
+        progressBarDialog = importDialog.findViewById(R.id.progress_bar);
+        selectFile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mGetContent.launch("*/*");
+            }
+        });
+    }
+
+
+
+
+
+    private void showfilepremission() {
+
     }
 }
