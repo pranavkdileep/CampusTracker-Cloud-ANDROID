@@ -53,6 +53,7 @@ public class StudentFragment extends Fragment {
     ProgressBar progressBarDialog;
     Button selectFile;
     Dialog deleteDialog;
+    ProgressBar progressBar2;
     List<PerfomanceStudents> perfomanceStudentsList;
 
 
@@ -144,7 +145,7 @@ public class StudentFragment extends Fragment {
             Cursor cursor = getActivity().getContentResolver().query(uri, null, null, null, null);
             try {
                 if (cursor != null && cursor.moveToFirst()) {
-                    result = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME));
+//                    result = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME));
                 }
             } finally {
                 cursor.close();
@@ -185,6 +186,7 @@ public class StudentFragment extends Fragment {
         recyclerView.setAdapter(new PerformanceAdapter(new ArrayList<>())); // Initialize with an empty list
 
 
+
         if (perfomanceStudentsList != null) { // Check if perfomanceStudentsList is not null
             updateAdapter(perfomanceStudentsList); // Update the adapter with the stored list
         }
@@ -220,13 +222,25 @@ public class StudentFragment extends Fragment {
                 if (studentName.isEmpty()) {
                     Toast.makeText(getContext(), "Please enter a name", Toast.LENGTH_SHORT).show();
                 } else {
+                    add.setVisibility(View.GONE);
+                    progressBar2 = dialog.findViewById(R.id.progressBar);
+                    progressBar2.setVisibility(View.VISIBLE);
                     // desable the add button
                     Apihelper apihelper = new Apihelper(getContext());
-                    apihelper.add_student(studentName, subjectId, getContext());
-                    getPerfomance getPerfomance = new getPerfomance(getContext(), StudentFragment.this);
-                    getPerfomance.getData(subjectId, getContext());
-                    dialog.dismiss();
-                    loadingProgressBar.setVisibility(View.VISIBLE);
+                    apihelper.add_student(studentName, subjectId, getContext(), new ApiHelperLoaded() {
+                        @Override
+                        public void onApiHelperLoaded() {
+                            getActivity().runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    dialog.dismiss();
+                                    getPerfomance getPerfomance = new getPerfomance(getContext(), StudentFragment.this);
+                                    getPerfomance.getData(subjectId, getContext());
+                                    loadingProgressBar.setVisibility(View.VISIBLE);
+                                }
+                            });
+                        }
+                    });
                 }
             }
         });

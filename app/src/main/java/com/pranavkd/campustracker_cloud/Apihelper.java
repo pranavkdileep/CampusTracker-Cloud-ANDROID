@@ -27,6 +27,7 @@ import com.pranavkd.campustracker_cloud.data.InternallistData;
 import com.pranavkd.campustracker_cloud.data.Subject;
 import com.pranavkd.campustracker_cloud.data.BulkAttendance;
 import com.pranavkd.campustracker_cloud.interfaces.ApiHelperLoaded;
+import com.pranavkd.campustracker_cloud.interfaces.Loging;
 import com.pranavkd.campustracker_cloud.interfaces.OnApiLoaded;
 
 import java.io.File;
@@ -60,10 +61,15 @@ public class Apihelper {
         url = constantsetu.getURL();
         key = constantsetu.getKey();
     }
+    public Apihelper()
+    {
+        url = null;
+        key = null;
+    }
 
 
 
-    public void addSubject(String subjectNameText, Context context) {
+    public void addSubject(String subjectNameText,int faculty_id, Context context,ApiHelperLoaded apiHelperLoaded) {
         // Define the Thread 't' with a Runnable that performs the network operation
         Thread t = new Thread(() -> {
             okhttp3.Response response = null;
@@ -74,6 +80,7 @@ public class Apihelper {
                 MediaType JSON = MediaType.parse("application/json; charset=utf-8");
                 JSONObject jsonObject = new JSONObject();
                 jsonObject.put("subject_name", subjectNameText);
+                jsonObject.put("facultie_id", faculty_id);
                 RequestBody body = RequestBody.create(JSON, jsonObject.toString());
                 Request request = new Request.Builder()
                         .url(url + "addsubject")
@@ -86,9 +93,11 @@ public class Apihelper {
                 response = client.newCall(request).execute();
 
                 if (response.isSuccessful()) {
+                    apiHelperLoaded.onApiHelperLoaded();
                     responseData = response.body().string();
-                    loadSubjects(context);
+                    Log.e("response", responseData);
                 } else {
+                    Log.e("response", response.toString());
                 }
                 Toast.makeText(context, "responseData", Toast.LENGTH_SHORT).show();
             } catch (Exception e) {
@@ -99,11 +108,7 @@ public class Apihelper {
             }
         });
         t.start();
-        try {
-            t.join();
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-        }
+
 
 
     }
@@ -158,40 +163,37 @@ public class Apihelper {
     }
 
 
-    public void loadSubjects(Context context) {
-        Api api = new Retrofit.Builder()
+    public void loadSubjects(Context context,int faculty_id) {
+        Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(url)
                 .addConverterFactory(GsonConverterFactory.create())
-                .build()
-                .create(Api.class);
+                .build();
 
-        api.getAllSubjects().enqueue(new Callback<List<Subject>>() {
+        api apiinterface = retrofit.create(api.class);
+        constantsetup db = new constantsetup(context);
+        String authHeader = "Bearer "+db.getKey();
+        Call<List<Subject>> call = apiinterface.getAllSubjects(authHeader,faculty_id);
+        call.enqueue(new Callback<List<Subject>>() {
             @Override
-            public void onResponse(Call<List<Subject>> call, Response<List<Subject>> response) {
-                if (!response.isSuccessful()) {
+            public void onResponse(Call<List<Subject>> call, Response<List<Subject>> response1) {
+                if (!response1.isSuccessful()) {
+                    System.out.println("Code: " + response1.code());
                     return;
                 }
-                subjects = response.body();
-                try {
-                    if(main!=null) {
-                        main.updateSubjects(subjects);
-                    }
-                } catch (Exception e) {
-                    Toast.makeText(context, e.toString(), Toast.LENGTH_LONG).show();
-                }
-
+                subjects = response1.body();
+                main.updateSubjects(subjects);
             }
 
             @Override
             public void onFailure(Call<List<Subject>> call, Throwable t) {
-                // Handle failure
+                t.printStackTrace();
             }
         });
 
 
     }
 
-    public void deleteSubject(int subjectId, Context context) {
+    public void deleteSubject(int subjectId, Context context,int faculty_id) {
         Toast.makeText(context, "delete" + subjectId, Toast.LENGTH_SHORT).show();
         Thread t = new Thread(() -> {
             okhttp3.Response response = null;
@@ -215,7 +217,7 @@ public class Apihelper {
 
                 if (response.isSuccessful()) {
                     responseData = response.body().string();
-                    loadSubjects(context);
+                    loadSubjects(context, faculty_id);
                 } else {
                 }
             } catch (Exception e) {
@@ -232,7 +234,7 @@ public class Apihelper {
             Thread.currentThread().interrupt();
         }
     }
-    public void add_student(String student_name, int subject_id, Context context) {
+    public void add_student(String student_name, int subject_id, Context context,ApiHelperLoaded apiHelperLoaded) {
         // Define the Thread 't' with a Runnable that performs the network operation
         Thread t = new Thread(() -> {
             okhttp3.Response response = null;
@@ -258,8 +260,9 @@ public class Apihelper {
                 getPerfomance.getData(subject_id, context);
 
                 if (response.isSuccessful()) {
+                    apiHelperLoaded.onApiHelperLoaded();
                     responseData = response.body().string();
-                    loadSubjects(context);
+
                 } else {
                 }
             } catch (Exception e) {
@@ -270,11 +273,6 @@ public class Apihelper {
             }
         });
         t.start();
-        try {
-            t.join();
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-        }
 
 
 
@@ -572,6 +570,92 @@ public class Apihelper {
                     Log.d("response", response.toString());
                 }
 
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                if (response != null) {
+                    response.close();
+                }
+            }
+        });
+        t.start();
+    }
+
+    public void login(String url, String key, int faculity, String password, Loging loging) {
+        Thread t = new Thread(() -> {
+            okhttp3.Response response = null;
+            String responseData = null;
+            try {
+                OkHttpClient client = new OkHttpClient();
+                MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("facultie_id", faculity);
+                jsonObject.put("facultie_password", password);
+                RequestBody body = RequestBody.create(JSON, jsonObject.toString());
+                Request request = new Request.Builder()
+                        .url(url + "login")
+                        .post(body)
+                        .addHeader("accept", "application/json")
+                        .addHeader("Content-Type", "application/json")
+                        .build();
+                response = client.newCall(request).execute();
+                if (response.isSuccessful()) {
+                    responseData = response.body().string();
+                    JSONObject jsonObject1 = new JSONObject(responseData);
+                    if(jsonObject1.getString("login").equals("true"))
+                    {
+                        loging.login(true);
+                    }
+                    else
+                    {
+                        loging.login(false);
+                    }
+                } else {
+                    Log.e("response", response.body().toString());
+                    loging.login(false);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                if (response != null) {
+                    response.close();
+                }
+            }
+        });
+        t.start();
+    }
+    public void adminauth(String url, String key, int faculity, String password, Loging loging) {
+        Thread t = new Thread(() -> {
+            okhttp3.Response response = null;
+            String responseData = null;
+            try {
+                OkHttpClient client = new OkHttpClient();
+                MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("admin_password", password);
+                RequestBody body = RequestBody.create(JSON, jsonObject.toString());
+                Request request = new Request.Builder()
+                        .url(url + "adminlogin")
+                        .post(body)
+                        .addHeader("accept", "application/json")
+                        .addHeader("Content-Type", "application/json")
+                        .build();
+                response = client.newCall(request).execute();
+                if (response.isSuccessful()) {
+                    responseData = response.body().string();
+                    JSONObject jsonObject1 = new JSONObject(responseData);
+                    if(jsonObject1.getString("admin").equals("true"))
+                    {
+                        loging.login(true);
+                    }
+                    else
+                    {
+                        loging.login(false);
+                    }
+                } else {
+                    Log.e("response", response.body().toString());
+                    loging.login(false);
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             } finally {

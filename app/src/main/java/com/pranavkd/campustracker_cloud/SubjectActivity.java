@@ -5,8 +5,12 @@ import androidx.fragment.app.Fragment;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
 
+import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -16,6 +20,7 @@ import com.google.android.material.tabs.TabLayoutMediator;
 public class SubjectActivity extends AppCompatActivity {
     private TabLayout tabLayout;
     private ViewPager2 viewPager;
+    ImageView downloadButton;
     public int subjectId;
     public Bundle args = new Bundle();
 
@@ -33,6 +38,15 @@ public class SubjectActivity extends AppCompatActivity {
         StudentFragment studentFragment = new StudentFragment(subjectId);
         args = new Bundle();
         args.putInt("subjectId", subjectId);
+        downloadButton = findViewById(R.id.downloadButton);
+        downloadButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(SubjectActivity.this, Download.class);
+                intent.putExtra("subjectId", subjectId);
+                startActivity(intent);
+            }
+        });
         studentFragment.setArguments(args);
 
 

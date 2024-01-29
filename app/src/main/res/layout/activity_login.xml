@@ -17,66 +17,96 @@
             android:layout_height="150dp"
             android:src="@drawable/login_logo" />
 
-        <EditText
-            android:id="@+id/ed_url"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/ed_url_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="32dp"
             android:layout_marginTop="16dp"
-            android:layout_marginEnd="32dp"
-            android:background="@drawable/edittext_rounded_bg"
-            android:hint="URL"
-            android:padding="12dp"
-            android:text="https://pranavkd-campus.hf.space/"
-            android:textColorHint="#999999" />
+            android:layout_marginEnd="32dp">
 
-        <EditText
-            android:id="@+id/ed_key"
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/ed_url"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="URL"
+                android:text="https://pranavkd-campus.hf.space/"
+                android:textColorHint="#999999" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Repeat for other EditText fields -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/ed_key_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="32dp"
             android:layout_marginTop="8dp"
-            android:layout_marginEnd="32dp"
-            android:background="@drawable/edittext_rounded_bg"
-            android:hint="Key"
-            android:inputType="textPassword"
-            android:text="12345678"
-            android:padding="12dp"
-            android:textColorHint="#999999" />
+            android:layout_marginEnd="32dp">
 
-        <EditText
-            android:id="@+id/ed_faculty_id"
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/ed_key"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/edittext_rounded_bg"
+                android:hint="Key"
+                android:inputType="textPassword"
+                android:text="12345678"
+                android:padding="12dp"
+                android:textColorHint="#999999" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/ed_faculty_id_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="32dp"
             android:layout_marginTop="8dp"
-            android:layout_marginEnd="32dp"
-            android:background="@drawable/edittext_rounded_bg"
-            android:hint="Faculty ID"
-            android:padding="12dp"
-            android:textColorHint="#999999" />
+            android:layout_marginEnd="32dp">
 
-        <EditText
-            android:id="@+id/ed_password"
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/ed_faculty_id"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/edittext_rounded_bg"
+                android:hint="Faculty ID"
+                android:padding="12dp"
+                android:textColorHint="#999999" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/ed_password_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="32dp"
             android:layout_marginTop="8dp"
-            android:layout_marginEnd="32dp"
-            android:background="@drawable/edittext_rounded_bg"
-            android:hint="Password"
-            android:inputType="textPassword"
-            android:padding="12dp"
-            android:textColorHint="#999999" />
+            android:layout_marginEnd="32dp">
 
-        <Button
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/ed_password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/edittext_rounded_bg"
+                android:hint="Password"
+                android:inputType="textPassword"
+                android:padding="12dp"
+                android:textColorHint="#999999" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.progressindicator.CircularProgressIndicator
+            android:id="@+id/progressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:indeterminate="true"
+            android:visibility="gone"
+            android:layout_gravity="center"/>
+
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/setconst"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="32dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="32dp"
-            android:background="@drawable/button_rounded_bg"
             android:text="Login"
             android:textColor="#FFFFFF"
             android:textSize="16sp" />

@@ -13,10 +13,12 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.pranavkd.campustracker_cloud.data.Subject;
+import com.pranavkd.campustracker_cloud.interfaces.ApiHelperLoaded;
 import com.pranavkd.campustracker_cloud.interfaces.OnDeleteClickListener;
 import com.pranavkd.campustracker_cloud.interfaces.OnSubClickListener;
 
@@ -28,8 +30,12 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView subjectsRecyclerView;
     private SubjectsAdapter adapter;
     Button logout_button;
+    TextView faculty_id_text;
     List<Subject> subjects;
     ProgressBar progressBar;
+    ProgressBar progressBar2;
+    constantsetup db;
+    int faculty_id;
 
     private Apihelper apihelper;
     @Override
@@ -40,7 +46,9 @@ public class MainActivity extends AppCompatActivity {
         subjectsRecyclerView = findViewById(R.id.classes_recycler_view);
         subjectsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         apihelper = new Apihelper(this,this);
-        apihelper.loadSubjects(this);
+        db = new constantsetup(this);
+        faculty_id = db.getFaculity();
+        apihelper.loadSubjects(this,faculty_id);
         subjectsRecyclerView.setAdapter(adapter);
         FloatingActionButton fab = findViewById(R.id.floatingActionButton);
         fab.setOnClickListener(view -> {
@@ -51,6 +59,8 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(MainActivity.this, Login.class);
             startActivity(intent);
         });
+        faculty_id_text = findViewById(R.id.faculty_id_text);
+        faculty_id_text.setText("Faculty ID : "+String.valueOf(faculty_id));
     }
 
 
@@ -69,6 +79,7 @@ public class MainActivity extends AppCompatActivity {
         //text input in dialog box
         EditText subjectname = dialog.findViewById(R.id.st_subname);
         Button btnclose = dialog.findViewById(R.id.closebtn);
+        progressBar2 = dialog.findViewById(R.id.progressBar);
         dialog.show();
         btn_add.setOnClickListener(view -> {
             String subjectNameText = subjectname.getText().toString();
@@ -77,9 +88,24 @@ public class MainActivity extends AppCompatActivity {
                 // Check if the subject name is empty
                 Toast.makeText(MainActivity.this, "Please enter a subject name", Toast.LENGTH_SHORT).show();
             } else {
-                progressBar.setVisibility(View.VISIBLE);
-                apihelper.addSubject(subjectNameText,this);
-                dialog.dismiss();
+                progressBar2.setVisibility(View.VISIBLE);
+                btn_add.setVisibility(View.GONE);
+                btnclose.setVisibility(View.GONE);
+                apihelper.addSubject(subjectNameText, faculty_id, this, new ApiHelperLoaded() {
+                    @Override
+                    public void onApiHelperLoaded() {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                progressBar2.setVisibility(View.GONE);
+                                dialog.dismiss();
+                                apihelper.loadSubjects(MainActivity.this,faculty_id);
+                                progressBar.setVisibility(View.VISIBLE);
+                            }
+                        });
+                    }
+                });
+
             }
         });
         btnclose.setOnClickListener(view -> {
@@ -98,7 +124,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void run() {
                         progressBar.setVisibility(View.VISIBLE);
-                        apihelper.deleteSubject(subjectId, MainActivity.this);
+                        apihelper.deleteSubject(subjectId, MainActivity.this, faculty_id);
                     }
                 });
             }

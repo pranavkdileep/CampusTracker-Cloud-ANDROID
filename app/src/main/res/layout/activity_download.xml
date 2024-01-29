@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:cardCornerRadius="8dp"
+    app:cardElevation="8dp"
+    tools:context=".Download">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/subjectIdLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="subject id">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/subjectId"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="number" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/downloadInternal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="download Internal"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/downloadAssignment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="download Assignment"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/downloadAttendance"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="download Attendance"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/downloadPerformance"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="download Performance"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton" />
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:indeterminate="true"
+            android:visibility="gone"/>
+
+    </LinearLayout>
+
+</com.google.android.material.card.MaterialCardView>
