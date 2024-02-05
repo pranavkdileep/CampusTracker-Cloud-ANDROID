@@ -34,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
     List<Subject> subjects;
     ProgressBar progressBar;
     ProgressBar progressBar2;
+    Button manage_faculty_button;
     constantsetup db;
     int faculty_id;
 
@@ -61,6 +62,18 @@ public class MainActivity extends AppCompatActivity {
         });
         faculty_id_text = findViewById(R.id.faculty_id_text);
         faculty_id_text.setText("Faculty ID : "+String.valueOf(faculty_id));
+
+        manage_faculty_button = findViewById(R.id.manage_faculty_button);
+        if(faculty_id == 0){
+            manage_faculty_button.setVisibility(View.VISIBLE);
+        }
+        manage_faculty_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, Faculty.class);
+                startActivity(intent);
+            }
+    });
     }
 
 

@@ -20,6 +20,7 @@ import android.widget.Toast;
 
 import com.pranavkd.campustracker_cloud.apicaller.GetinternalsApi;
 import com.pranavkd.campustracker_cloud.data.InternallistData;
+import com.pranavkd.campustracker_cloud.data.faculti;
 import com.pranavkd.campustracker_cloud.interfaces.OnApiLoaded;
 import com.pranavkd.campustracker_cloud.interfaces.onEditAtt;
 
@@ -101,6 +102,11 @@ public class InternalFragment extends Fragment {
                 internallistDataList = (List<InternallistData>) list;
                 setInternallistDataList(internallistDataList);
             }
+
+            @Override
+            public void onFacultiLoaded(List<faculti> faculti) {
+
+            }
         });
     }
 
@@ -138,6 +144,11 @@ public class InternalFragment extends Fragment {
                             setInternallistDataList(internallistDataList);
                             getdata();
                             dialog.dismiss();
+                        }
+
+                        @Override
+                        public void onFacultiLoaded(List<faculti> faculti) {
+
                         }
                     });
                     progressBar.setVisibility(View.VISIBLE);

@@ -26,9 +26,11 @@ import com.pranavkd.campustracker_cloud.data.BulkInternals;
 import com.pranavkd.campustracker_cloud.data.InternallistData;
 import com.pranavkd.campustracker_cloud.data.Subject;
 import com.pranavkd.campustracker_cloud.data.BulkAttendance;
+import com.pranavkd.campustracker_cloud.data.faculti;
 import com.pranavkd.campustracker_cloud.interfaces.ApiHelperLoaded;
 import com.pranavkd.campustracker_cloud.interfaces.Loging;
 import com.pranavkd.campustracker_cloud.interfaces.OnApiLoaded;
+import com.pranavkd.campustracker_cloud.interfaces.faculti_list;
 
 import java.io.File;
 import java.io.IOException;
@@ -393,6 +395,11 @@ public class Apihelper {
                             internallistDataList = internallistData;
                             onApiLoadedListener.onApiLoaded(internallistDataList);
                         }
+
+                        @Override
+                        public void onFacultiLoaded(List<faculti> faculti) {
+
+                        }
                     });
                     internallistDataList = getinternalsApi.getInternals();
                 } else {
@@ -656,6 +663,161 @@ public class Apihelper {
                     Log.e("response", response.body().toString());
                     loging.login(false);
                 }
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                if (response != null) {
+                    response.close();
+                }
+            }
+        });
+        t.start();
+    }
+    public void listfaculties(Context context, OnApiLoaded onApiLoaded) {
+        String url = new constantsetup(context).getURL();
+        String key = new constantsetup(context).getKey();
+        String authHeader = "Bearer " + key;
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(url)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        faculti_list apiinterface = retrofit.create(faculti_list.class);
+        Call<List<faculti>> call = apiinterface.getallfaculties(authHeader);
+        call.enqueue(new Callback<List<faculti>>() {
+            @Override
+            public void onResponse(Call<List<faculti>> call, Response<List<faculti>> response) {
+                if (!response.isSuccessful()) {
+                    System.out.println("Code: " + response.code());
+                    return;
+                }
+                List<faculti> faculties = response.body();
+                onApiLoaded.onFacultiLoaded(faculties);
+            }
+
+            @Override
+            public void onFailure(Call<List<faculti>> call, Throwable t) {
+                t.printStackTrace();
+            }
+        });
+    }
+
+    public void deletefacultie(Faculty faculty, int id, ApiHelperLoaded deleted) {
+        Thread t = new Thread(() -> {
+            okhttp3.Response response = null;
+            String responseData = null;
+            String url = new constantsetup(faculty).getURL();
+            String key = new constantsetup(faculty).getKey();
+
+            try {
+                OkHttpClient client = new OkHttpClient();
+                MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("facultie_id", id);
+                RequestBody body = RequestBody.create(JSON, jsonObject.toString());
+                Request request = new Request.Builder()
+                        .url(url + "removefacultie")
+                        .post(body)
+                        .addHeader("accept", "application/json")
+                        .addHeader("Authorization", "Bearer " + key)
+                        .addHeader("Content-Type", "application/json")
+                        .build();
+
+
+                response = client.newCall(request).execute();
+
+                if (response.isSuccessful()) {
+                    responseData = response.body().string();
+                    deleted.onApiHelperLoaded();
+                } else {
+                    Log.e("response", response.toString());
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                if (response != null) {
+                    response.close();
+                }
+            }
+        });
+        t.start();
+    }
+
+    public void updatefacultie(Faculty faculty, int id, String password, ApiHelperLoaded updated) {
+        Thread t = new Thread(() -> {
+            okhttp3.Response response = null;
+            String responseData = null;
+            String url = new constantsetup(faculty).getURL();
+            String key = new constantsetup(faculty).getKey();
+
+            try {
+                OkHttpClient client = new OkHttpClient();
+                MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("facultie_id", id);
+                jsonObject.put("new_password", password);
+                RequestBody body = RequestBody.create(JSON, jsonObject.toString());
+                Request request = new Request.Builder()
+                        .url(url + "changepassword")
+                        .post(body)
+                        .addHeader("accept", "application/json")
+                        .addHeader("Authorization", "Bearer " + key)
+                        .addHeader("Content-Type", "application/json")
+                        .build();
+
+                response = client.newCall(request).execute();
+
+                if (response.isSuccessful()) {
+                    responseData = response.body().string();
+                    updated.onApiHelperLoaded();
+                } else {
+                    Log.e("response", response.toString());
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                if (response != null) {
+                    response.close();
+                }
+            }
+        });
+        t.start();
+    }
+
+    public void addfacultie(Faculty faculty, String name, String password, ApiHelperLoaded added) {
+        Thread t = new Thread(() -> {
+            okhttp3.Response response = null;
+            String responseData = null;
+            String url = new constantsetup(faculty).getURL();
+            String key = new constantsetup(faculty).getKey();
+
+            try {
+                OkHttpClient client = new OkHttpClient();
+                MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("facultie_name", name);
+                jsonObject.put("facultie_password", password);
+                RequestBody body = RequestBody.create(JSON, jsonObject.toString());
+                Request request = new Request.Builder()
+                        .url(url + "addfacultie")
+                        .post(body)
+                        .addHeader("accept", "application/json")
+                        .addHeader("Authorization", "Bearer " + key)
+                        .addHeader("Content-Type", "application/json")
+                        .build();
+
+                response = client.newCall(request).execute();
+
+                if (response.isSuccessful()) {
+                    responseData = response.body().string();
+                    added.onApiHelperLoaded();
+                } else {
+                    Log.e("response", response.toString());
+                }
+
             } catch (Exception e) {
                 e.printStackTrace();
             } finally {
