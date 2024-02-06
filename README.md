@@ -2,7 +2,11 @@
 
 A Client App For :- https://github.com/pranavkdileep/CampusTrackr_Backend
 
-![WhatsApp Image 2024-02-06 at 11 41 11 AM](https://github.com/pranavkdileep/CampusTracker-Cloud-ANDROID/assets/91619846/e7dd7c39-887f-4031-a383-fa70abc6486a)
+https://https://github.com/pranavkdileep/CampusTracker-Cloud-ANDROID/assets/91619846/715c5ba5-abd6-499d-b529-163a3c6711ce
+
+![WhatsApp Image 2024-02-06 at 11 41 11 AM](github.com/pranavkdileep/CampusTracker-Cloud-ANDROID/assets/91619846/e7dd7c39-887f-4031-a383-fa70abc6486a)
+
+
                                                                                                         
                                       
 
