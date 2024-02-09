@@ -1,6 +1,16 @@
 name: Build and Release APK
 
-on: workflow_dispatch
+on:
+  workflow_dispatch:
+    inputs:
+      url:
+        type: string
+        description: 'Api Url'
+        required: true
+      key:
+        type: string
+        description: 'Api Key'
+        required: true
 
 jobs:
   build:
@@ -8,6 +18,18 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+      - name: Setup Api Url
+        uses: Nambers/ReplaceStringInFile@v1
+        with:
+          path: app/src/main/res/values/strings.xml
+          oldString: 'API_URL'
+          newString: ${{ github.event.inputs.url }}
+      - name: Setup Api Key
+        uses: Nambers/ReplaceStringInFile@v1
+        with:
+          path: app/src/main/res/values/strings.xml
+          oldString: 'API_KEY'
+          newString: ${{ github.event.inputs.key }}
       - name: Setup JDK
         uses: actions/setup-java@v1
         with:
