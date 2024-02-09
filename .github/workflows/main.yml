@@ -19,13 +19,13 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
       - name: Setup Api Url
-        uses: Nambers/ReplaceStringInFile@v1
+        uses: Nambers/ReplaceStringInFile@v1.3
         with:
           path: app/src/main/res/values/strings.xml
           oldString: 'API_URL'
           newString: ${{ github.event.inputs.url }}
       - name: Setup Api Key
-        uses: Nambers/ReplaceStringInFile@v1
+        uses: Nambers/ReplaceStringInFile@v1.3
         with:
           path: app/src/main/res/values/strings.xml
           oldString: 'API_KEY'
