@@ -13,7 +13,7 @@ jobs:
         with:
           java-version: 17
       - name: Build release APK
-        run: ./gradlew assembleRelease && sdkmanager "build-tools;34.0.5"
+        run: ./gradlew assembleRelease && cd /usr/local/lib/android/sdk/platform-tools && ls && ./sdkmanager "build-tools;34.0.5"
       - name: Sign APK with keystore
         uses: r0adkll/sign-android-release@v1
         with:
