@@ -11,7 +11,7 @@ https://github.com/pranavkdileep/CampusTracker-Cloud-ANDROID/assets/91619846/715
                                       
 
 # Getting started
- [<img width="300px" src="https://github.com/pranavkdileep/CampusTrackr_Backend/blob/main/Docs/Download%20Android%20APK%20Badge.png?raw=true" align="center" />](https://github.com/pranavkdileep/CampusTracker-Cloud-ANDROID/releases/download/1.0/app-release.apk)
+ [<img width="300px" src="https://github.com/pranavkdileep/CampusTrackr_Backend/blob/main/Docs/Download%20Android%20APK%20Badge.png?raw=true" align="center" />](https://github.com/pranavkdileep/CampusTracker-Cloud-ANDROID/releases/download/2.0/app-release.apk)
 
 ## Demo
 
