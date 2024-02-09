@@ -13,7 +13,7 @@ jobs:
         with:
           java-version: 17
       - name: Build release APK
-        run: ./gradlew assembleRelease && cd /usr/local/lib/android/sdk/cmdline-tools/latest && ls && ./sdkmanager "build-tools;34.0.5"
+        run: ./gradlew assembleRelease
       - name: Sign APK with keystore
         uses: r0adkll/sign-android-release@v1
         with:
@@ -22,8 +22,7 @@ jobs:
           alias: ${{ secrets.SIGNING_KEY_ALIAS }}
           keyStorePassword: ${{ secrets.SIGNING_STORE_PASSWORD }}
           keyPassword: ${{ secrets.SIGNING_KEY_PASSWORD }}
-        env:
-          BUILD_TOOLS_VERSION: "34.0.5"
+          
       - name: Upload release APK
         uses: actions/upload-artifact@v2
         with:
